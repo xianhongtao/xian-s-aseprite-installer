@@ -54,6 +54,7 @@ AsepriteInstaller.exe [options]
 ### Working Directory
 
 All downloads, source, and build artifacts are stored in:
+
 ```
 %LOCALAPPDATA%\AsepriteInstaller\
 ├── tools/         # Portable CMake, Ninja, MinGit
@@ -140,4 +141,5 @@ src/AsepriteInstaller/
 
 ## License
 
-This installer project is provided as-is. Aseprite itself is licensed under its own terms — see [Aseprite's EULA](https://github.com/aseprite/aseprite/blob/main/EULA.txt) for details.
+This installer project is licensed under the **GNU General Public License v3.0 or later** — see [LICENSE](LICENSE) for details.
+Aseprite itself is licensed under its own terms — see [Aseprite's EULA](https://github.com/aseprite/aseprite/blob/main/EULA.txt) for details.
