@@ -27,6 +27,12 @@ public sealed class ToolsSetupStep : IInstallerStep
     private const string GitUrl =
         $"https://github.com/git-for-windows/git/releases/download/v2.55.0.windows.3/MinGit-{GitVersion}-64-bit.zip";
 
+    /// <summary>
+    /// Never skip — ExecuteAsync is already idempotent (checks file existence)
+    /// and must always run to populate ctx.CMakeExe/NinjaExe/GitExe paths.
+    /// </summary>
+    public bool CanSkip(InstallContext ctx) => false;
+
     public async Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {
         using var downloader = new Downloader(ctx.Log);

@@ -21,6 +21,13 @@ public sealed class VisualStudioStep : IInstallerStep
     // VS 2026 (v18) is also supported if already installed — detection handles both.
     private const string VsBuildToolsUrl = "https://aka.ms/vs/17/release/vs_buildtools.exe";
 
+    /// <summary>
+    /// This step is never skipped via state.json because the MSVC environment
+    /// variables (ctx.VsEnv) are in-memory only and must be captured on every run.
+    /// Instead, ExecuteAsync handles the idempotency internally by re-detecting VS.
+    /// </summary>
+    public bool CanSkip(InstallContext ctx) => false;
+
     public async Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {
         // --- Detect existing VS installation ---
@@ -36,6 +43,13 @@ public sealed class VisualStudioStep : IInstallerStep
             var vcvars = VsDetector.GetVcvars64Path(vs.InstallationPath);
             ctx.VsEnv = VsEnvironment.Capture(vcvars, ctx.Log);
             return true;
+        }
+
+        // If state says we already completed but VS is not detected now,
+        // something changed — fall through to install logic.
+        if (ctx.State.IsCompleted(StepId))
+        {
+            ctx.Log.Warn("VS was previously set up but is no longer detected. Re-checking...");
         }
 
         if (vs != null && !vs.HasVCTools)

@@ -44,11 +44,10 @@ public sealed class InstallerEngine
 
             try
             {
-                var success = await AnsiConsole.Status()
-                    .Spinner(Spinner.Known.Dots)
-                    .SpinnerStyle(Style.Parse("cyan"))
-                    .StartAsync($"[cyan]{step.DisplayName}[/]",
-                        _ => step.ExecuteAsync(_ctx, ct));
+                // NOTE: Do NOT wrap in AnsiConsole.Status() — it conflicts with
+                // AnsiConsole.Progress() used inside steps (Downloader, ArchiveExtractor).
+                // Steps manage their own progress display.
+                var success = await step.ExecuteAsync(_ctx, ct);
 
                 if (success)
                 {

@@ -84,16 +84,13 @@ public sealed class BuildStep : IInstallerStep
         // --- Ninja build ---
         ctx.Log.Info("Building Aseprite (this may take several minutes)...");
 
-        // Run ninja with real-time output. We use a status spinner alongside.
-        var ninjaResult = await AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse("cyan"))
-            .StartAsync("Compiling Aseprite with Ninja...",
-                _ => runner.RunAsync(
-                    ctx.NinjaExe, "aseprite",
-                    workingDir: ctx.BuildDir,
-                    envVars: ctx.VsEnv,
-                    showOutput: true, ct: ct));
+        // Run ninja with real-time output (no Status wrapper — it would conflict
+        // with the process output being printed to the console).
+        var ninjaResult = await runner.RunAsync(
+                ctx.NinjaExe, "aseprite",
+                workingDir: ctx.BuildDir,
+                envVars: ctx.VsEnv,
+                showOutput: true, ct: ct);
 
         if (!ninjaResult.Success)
         {

@@ -18,6 +18,12 @@ public sealed class SkiaSetupStep : IInstallerStep
     // Fallback tag if the source hasn't been cloned yet.
     private const string DefaultSkiaTag = "m124-08a5439a6b";
 
+    /// <summary>
+    /// Never skip — ExecuteAsync is already idempotent (checks skia.lib existence)
+    /// and must always run to populate ctx.SkiaDir/SkiaLibDir paths.
+    /// </summary>
+    public bool CanSkip(InstallContext ctx) => false;
+
     public async Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {
         // --- Determine Skia tag ---

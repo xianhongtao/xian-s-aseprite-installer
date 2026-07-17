@@ -14,6 +14,11 @@ public sealed class PreflightCheckStep : IInstallerStep
 
     private const long MinDiskSpaceBytes = 5L * 1024 * 1024 * 1024; // 5 GB
 
+    /// <summary>
+    /// Always run pre-flight checks — environment may have changed between runs.
+    /// </summary>
+    public bool CanSkip(InstallContext ctx) => false;
+
     public Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {
         // --- OS version ---

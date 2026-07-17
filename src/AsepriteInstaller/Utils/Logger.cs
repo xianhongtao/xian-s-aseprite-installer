@@ -25,7 +25,7 @@ public sealed class Logger : IDisposable
         var line = $"[INFO ] {DateTime.Now:HH:mm:ss}  {message}";
         lock (_lock)
         {
-            AnsiConsole.MarkupLine($"[grey]{DateTime.Now:HH:mm:ss}[/] {message}");
+            AnsiConsole.MarkupLine($"[grey]{DateTime.Now:HH:mm:ss}[/] {Escape(message)}");
             _file.WriteLine(line);
         }
     }
@@ -35,7 +35,7 @@ public sealed class Logger : IDisposable
         var line = $"[OK   ] {DateTime.Now:HH:mm:ss}  {message}";
         lock (_lock)
         {
-            AnsiConsole.MarkupLine($"[green]✓[/] {message}");
+            AnsiConsole.MarkupLine($"[green]✓[/] {Escape(message)}");
             _file.WriteLine(line);
         }
     }
@@ -45,7 +45,7 @@ public sealed class Logger : IDisposable
         var line = $"[WARN ] {DateTime.Now:HH:mm:ss}  {message}";
         lock (_lock)
         {
-            AnsiConsole.MarkupLine($"[yellow]⚠[/] {message}");
+            AnsiConsole.MarkupLine($"[yellow]⚠[/] {Escape(message)}");
             _file.WriteLine(line);
         }
     }
@@ -55,10 +55,13 @@ public sealed class Logger : IDisposable
         var line = $"[ERROR] {DateTime.Now:HH:mm:ss}  {message}";
         lock (_lock)
         {
-            AnsiConsole.MarkupLine($"[red]✗[/] {message}");
+            AnsiConsole.MarkupLine($"[red]✗[/] {Escape(message)}");
             _file.WriteLine(line);
         }
     }
+
+    /// <summary>Escape [ and ] as [[ and ]] for Spectre.Console markup safety.</summary>
+    private static string Escape(string text) => text.Replace("[", "[[").Replace("]", "]]");
 
     /// <summary>Log raw text without Spectre markup (for process output).</summary>
     public void Raw(string message)
