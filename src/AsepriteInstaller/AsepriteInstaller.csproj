@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>AsepriteInstaller</RootNamespace>
-    <AssemblyName>AsepriteInstaller</AssemblyName>
+    <AssemblyName>xiansAsepriteInstaller</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SupportedOSPlatform>windows</SupportedOSPlatform>

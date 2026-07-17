@@ -8,6 +8,14 @@ A **one-click, idempotent, atomic** installer for [Aseprite](https://github.com/
 
 Double-click the single `AsepriteInstaller.exe` and it will:
 
+> ⚠️ **Disclaimer**: This is an **unofficial, community-made tool** and is **NOT affiliated with Igara Studio S.A.** or the Aseprite team.
+> Aseprite is licensed under its own [EULA](https://github.com/aseprite/aseprite/blob/main/EULA.txt). By using this installer, you agree to comply with the Aseprite EULA.
+> 💚 **If you enjoy Aseprite, please consider [purchasing the official version](https://aseprite.org) to support the developers.**
+
+A **one-click, idempotent, atomic** installer for [Aseprite](https://github.com/aseprite/aseprite) on Windows.
+
+Double-click the single `xiansAsepriteInstaller.exe` and it will:
+
 1. **Detect / install** Visual Studio 2022 Build Tools with C++ workload
 2. **Download** portable CMake, Ninja, and Git (no system pollution)
 3. **Download** the prebuilt Skia library matching Aseprite's requirements
@@ -22,13 +30,13 @@ Double-click the single `AsepriteInstaller.exe` and it will:
 # Build the installer
 .\build-installer.ps1
 
-# Run it (double-click dist\AsepriteInstaller.exe or:)
-.\dist\AsepriteInstaller.exe
+# Run it (double-click dist\xiansAsepriteInstaller.exe or:)
+.\dist\xiansAsepriteInstaller.exe
 ```
 
 ## Features
 
-- **Single file**: One self-contained `.exe` (~10 MB), no .NET runtime needed
+- **Single file**: One self-contained `xiansAsepriteInstaller.exe` (~10 MB), no .NET runtime needed
 - **Idempotent**: Re-running skips already-completed steps; safe to interrupt and resume
 - **Atomic**: Failed installs never corrupt an existing Aseprite installation
 - **No system pollution**: Build tools are downloaded to a working directory, not installed system-wide
@@ -38,7 +46,7 @@ Double-click the single `AsepriteInstaller.exe` and it will:
 ## Command-Line Options
 
 ```
-AsepriteInstaller.exe [options]
+xiansAsepriteInstaller.exe [[options]]
 
   --system            Install to C:\Program Files\Aseprite (requires admin)
   --user              Install to %LOCALAPPDATA%\Programs\Aseprite (default)
@@ -105,7 +113,7 @@ The installer handles everything automatically:
 .\build-installer.ps1
 ```
 
-Output: `dist/AsepriteInstaller.exe`
+Output: `dist/xiansxiansAsepriteInstaller.exe`
 
 ## Project Structure
 

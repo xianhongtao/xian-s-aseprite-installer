@@ -22,7 +22,7 @@ public sealed class Downloader : IDisposable
         {
             Timeout = TimeSpan.FromMinutes(30),
         };
-        _client.DefaultRequestHeaders.Add("User-Agent", "AsepriteInstaller/1.0");
+        _client.DefaultRequestHeaders.Add("User-Agent", "xian's-Aseprite-Installer/1.0");
     }
 
     /// <summary>

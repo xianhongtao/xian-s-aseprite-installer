@@ -18,6 +18,9 @@ public static class Translations
     public static string BannerTitle =>
         _("xian's Aseprite Installer", "xian's Aseprite 安装器");
 
+    // Note: FigletText doesn't render apostrophes well, so the banner
+    // uses a simplified title. The full name appears in panels and help.
+
     public static string BannerDescription =>
         _("Idempotent, atomic, one-click Aseprite build & install for Windows.\n" +
           "This tool will download all dependencies, compile Aseprite from source,\n" +

@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Build the Aseprite Installer into a single native AOT executable.
+    Build xian's Aseprite Installer into a single native AOT executable.
 
 .DESCRIPTION
     Runs `dotnet publish` with Native AOT to produce a single self-contained
-    AsepriteInstaller.exe in the dist/ directory.
+    xiansAsepriteInstaller.exe in the dist/ directory.
 
 .PARAMETER Configuration
     Build configuration: Release (default) or Debug.
@@ -23,7 +23,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectPath = Join-Path $scriptDir "src\AsepriteInstaller\AsepriteInstaller.csproj"
 $distDir = Join-Path $scriptDir "dist"
 
-Write-Host "Building Aseprite Installer ($Configuration)..." -ForegroundColor Cyan
+Write-Host "Building xian's Aseprite Installer ($Configuration)..." -ForegroundColor Cyan
 Write-Host "Project: $projectPath"
 Write-Host "Output:  $distDir"
 Write-Host ""
@@ -37,7 +37,7 @@ New-Item -ItemType Directory -Path $distDir -Force | Out-Null
 # Publish with Native AOT.
 # Note: The output path must not contain apostrophes due to an MSBuild path bug.
 # We publish to a temp dir first, then copy to dist/.
-$tempDist = Join-Path $env:TEMP "AsepriteInstaller-publish"
+$tempDist = Join-Path $env:TEMP "xiansAsepriteInstaller-publish"
 if (Test-Path $tempDist) { Remove-Item $tempDist -Recurse -Force }
 
 dotnet publish $projectPath `
@@ -54,18 +54,18 @@ if ($LASTEXITCODE -ne 0) {
 # Copy results to dist/.
 if (Test-Path $distDir) { Remove-Item $distDir -Recurse -Force }
 New-Item -ItemType Directory -Path $distDir -Force | Out-Null
-Copy-Item "$tempDist\AsepriteInstaller.exe" $distDir -Force
-if (Test-Path "$tempDist\AsepriteInstaller.pdb") {
-    Copy-Item "$tempDist\AsepriteInstaller.pdb" $distDir -Force
+Copy-Item "$tempDist\xiansAsepriteInstaller.exe" $distDir -Force
+if (Test-Path "$tempDist\xiansAsepriteInstaller.pdb") {
+    Copy-Item "$tempDist\xiansAsepriteInstaller.pdb" $distDir -Force
 }
 
-$exePath = Join-Path $distDir "AsepriteInstaller.exe"
+$exePath = Join-Path $distDir "xiansAsepriteInstaller.exe"
 if (Test-Path $exePath) {
     $size = (Get-Item $exePath).Length / 1MB
     Write-Host ""
     Write-Host "Build SUCCESS!" -ForegroundColor Green
     Write-Host "Output: $exePath ($($size.ToString('F1')) MB)" -ForegroundColor Green
 } else {
-    Write-Host "Build completed but AsepriteInstaller.exe not found in $distDir" -ForegroundColor Red
+    Write-Host "Build completed but xiansAsepriteInstaller.exe not found in $distDir" -ForegroundColor Red
     exit 1
 }

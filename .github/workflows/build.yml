@@ -11,7 +11,7 @@ env:
 
 jobs:
     build:
-        name: Build AsepriteInstaller.exe
+        name: Build xiansAsepriteInstaller.exe
         runs-on: windows-2022
 
         steps:
@@ -45,8 +45,8 @@ jobs:
             - name: ⬆️ Upload artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: AsepriteInstaller-win-x64
-                  path: dist/AsepriteInstaller.exe
+                  name: xiansAsepriteInstaller-win-x64
+                  path: dist/xiansAsepriteInstaller.exe
                   if-no-files-found: error
                   retention-days: 30
 
@@ -62,7 +62,7 @@ jobs:
             - name: 📥 Download artifact
               uses: actions/download-artifact@v4
               with:
-                  name: AsepriteInstaller-win-x64
+                  name: xiansAsepriteInstaller-win-x64
                   path: release
 
             - name: 🏷️ Create GitHub Release
@@ -71,19 +71,22 @@ jobs:
                   tag_name: ${{ github.ref_name }}
                   name: ${{ github.ref_name }}
                   generate_release_notes: true
-                  files: release/AsepriteInstaller.exe
+                  files: release/xiansAsepriteInstaller.exe
                   body: |
-                      ## Aseprite Installer ${{ github.ref_name }}
+                      ## xian's Aseprite Installer ${{ github.ref_name }}
+
+                      > ⚠️ Unofficial community tool — NOT affiliated with Igara Studio S.A.
+                      > 💚 Consider [purchasing the official Aseprite](https://aseprite.org) to support the developers.
 
                       ### Download
 
-                      **`AsepriteInstaller.exe`** — Single-file Windows installer (~8 MB)
+                      **`xiansAsepriteInstaller.exe`** — Single-file Windows installer (~8 MB)
 
                       ### Usage
 
-                      1. Download `AsepriteInstaller.exe`
+                      1. Download `xiansAsepriteInstaller.exe`
                       2. Double-click to run
-                      3. Follow the interactive prompts
+                      3. Select language → Accept EULA → Follow prompts
 
                       ### Requirements
 

@@ -13,7 +13,9 @@ public static class ConsoleApp
     /// <summary>Show the welcome banner, disclaimer, and a brief description.</summary>
     public static void ShowBanner()
     {
-        var title = Translations.CurrentLang == Language.ZhCN ? "xian's Aseprite 安装器" : "xian's Aseprite Installer";
+        // FigletText can't render apostrophes, so use a simplified banner.
+        // The full "xian's Aseprite Installer" name appears in the panel below.
+        var title = Translations.CurrentLang == Language.ZhCN ? "Aseprite 安装器" : "Aseprite Installer";
         AnsiConsole.Write(new FigletText(title)
             .Centered()
             .Color(Color.Cyan1));
