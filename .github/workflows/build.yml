@@ -26,10 +26,8 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: 🔨 Install .NET Native AOT workload
-        shell: pwsh
-        run: |
-          dotnet workload install native-aot
+      # Native AOT is built into .NET 10 — no workload install needed.
+      # The windows-2022 runner includes VS 2022 with C++ tools (MSVC linker).
 
       - name: 📦 Restore dependencies
         run: dotnet restore src/AsepriteInstaller/AsepriteInstaller.csproj
