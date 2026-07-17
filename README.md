@@ -27,7 +27,15 @@ Double-click the single `xiansAsepriteInstaller.exe` and it will:
 # Run it (double-click dist\xiansAsepriteInstaller.exe or:)
 .\dist\xiansAsepriteInstaller.exe
 ```
+## Uninstall
 
+Download `uninstall.ps1` from the [latest release](https://github.com/xianhongtao/xian-s-aseprite-installer/releases), then:
+
+```powershell
+.\uninstall.ps1           # Interactive — asks before removing
+.\uninstall.ps1 -All      # Remove everything including build cache
+.\uninstall.ps1 -Quiet    # Non-interactive (for automation)
+```
 ## Features
 
 - **Single file**: One self-contained `xiansAsepriteInstaller.exe` (~10 MB), no .NET runtime needed
