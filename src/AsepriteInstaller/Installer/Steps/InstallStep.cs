@@ -146,21 +146,20 @@ public sealed class InstallStep : IInstallerStep
         try
         {
             var exePath = Path.Combine(installDir, "aseprite.exe");
-            // Use "xian's Aseprite" as the folder name to distinguish from official version.
+            // Folder: "Aseprite" — the software itself is Aseprite.
+            // Shortcut name suffix "(self-compiled)" distinguishes from official pre-built.
             var shortcutDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Programs),
-                "xian's Aseprite");
+                "Aseprite");
             Directory.CreateDirectory(shortcutDir);
-            // Name the shortcut "Aseprite (self-compiled)" to distinguish from official.
             var shortcutPath = Path.Combine(shortcutDir, "Aseprite (self-compiled).lnk");
 
-            // Use PowerShell to create the shortcut (avoids COM/WshShell in AOT).
             var psScript =
                 $"$ws = New-Object -ComObject WScript.Shell; " +
                 $"$s = $ws.CreateShortcut('{shortcutPath}'); " +
                 $"$s.TargetPath = '{exePath}'; " +
                 $"$s.WorkingDirectory = '{installDir}'; " +
-                $"$s.Description = 'Aseprite (self-compiled via xian''s Aseprite Installer)'; " +
+                $"$s.Description = 'Aseprite (self-compiled) — built via xian''s Aseprite Installer'; " +
                 $"$s.Save()";
 
             var psi = new ProcessStartInfo
