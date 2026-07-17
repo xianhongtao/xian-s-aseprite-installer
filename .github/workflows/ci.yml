@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  ci:
+    name: Build & Lint Check
+    runs-on: windows-2022
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 🔨 Install .NET Native AOT workload
+        shell: pwsh
+        run: dotnet workload install native-aot
+
+      - name: 📦 Restore
+        run: dotnet restore src/AsepriteInstaller/AsepriteInstaller.csproj
+
+      - name: 🏗️ Build (non-AOT, fast check)
+        run: dotnet build src/AsepriteInstaller/AsepriteInstaller.csproj -c Release --no-restore
+
+      - name: 🔍 AOT trim analysis (publish dry-run)
+        run: |
+          dotnet publish src/AsepriteInstaller/AsepriteInstaller.csproj `
+            -c Release `
+            -r win-x64 `
+            -o ci-dist `
+            /p:PublishAot=true `
+            /p:TrimMode=full
+        continue-on-error: true

@@ -1,0 +1,22 @@
+# Build artifacts
+dist/
+bin/
+obj/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# CI output
+ci-dist/
+
+# Installer runtime working directory (created at %LOCALAPPDATA%, not in repo)
+# The pattern below matches a top-level folder, not src/AsepriteInstaller/
+/AsepriteInstaller/
+
+# Logs
+*.log
+*.pdb
