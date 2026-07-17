@@ -1,44 +1,47 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+# CI only runs on branch pushes / PRs — never on tag pushes.
+# Tag pushes trigger build.yml (Build & Release) instead.
 
 env:
-  DOTNET_NOLOGO: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
+    DOTNET_NOLOGO: true
+    DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  ci:
-    name: Build & Lint Check
-    runs-on: windows-2022
+    ci:
+        name: Build & Lint Check
+        runs-on: windows-2022
 
-    steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: 📥 Checkout
+              uses: actions/checkout@v4
 
-      - name: 🔧 Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
+            - name: 🔧 Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "10.0.x"
 
-      # Native AOT is built into .NET 10 — no workload install needed.
-      # The windows-2022 runner includes VS 2022 with C++ tools (MSVC linker).
+            # Native AOT is built into .NET 10 — no workload install needed.
+            # The windows-2022 runner includes VS 2022 with C++ tools (MSVC linker).
 
-      - name: 📦 Restore
-        run: dotnet restore src/AsepriteInstaller/AsepriteInstaller.csproj
+            - name: 📦 Restore
+              run: dotnet restore src/AsepriteInstaller/AsepriteInstaller.csproj
 
-      - name: 🏗️ Build (non-AOT, fast check)
-        run: dotnet build src/AsepriteInstaller/AsepriteInstaller.csproj -c Release --no-restore
+            - name: 🏗️ Build (non-AOT, fast check)
+              run: dotnet build src/AsepriteInstaller/AsepriteInstaller.csproj -c Release --no-restore
 
-      - name: 🔍 AOT trim analysis (publish dry-run)
-        run: |
-          dotnet publish src/AsepriteInstaller/AsepriteInstaller.csproj `
-            -c Release `
-            -r win-x64 `
-            -o ci-dist `
-            /p:PublishAot=true `
-            /p:TrimMode=full
-        continue-on-error: true
+            - name: 🔍 AOT trim analysis (publish dry-run)
+              run: |
+                  dotnet publish src/AsepriteInstaller/AsepriteInstaller.csproj `
+                    -c Release `
+                    -r win-x64 `
+                    -o ci-dist `
+                    /p:PublishAot=true `
+                    /p:TrimMode=full
+              continue-on-error: true
