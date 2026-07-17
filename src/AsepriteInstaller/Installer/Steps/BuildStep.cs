@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Utils;
 using Spectre.Console;
@@ -13,7 +14,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class BuildStep : IInstallerStep
 {
     public string StepId => "build";
-    public string DisplayName => "Compile Aseprite";
+    public string DisplayName => Translations.StepBuild;
 
     public async Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {

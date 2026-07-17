@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Utils;
 
@@ -12,7 +13,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class ToolsSetupStep : IInstallerStep
 {
     public string StepId => "tools-setup";
-    public string DisplayName => "Download build tools (CMake, Ninja, Git)";
+    public string DisplayName => Translations.StepTools;
 
     // Pinned versions for reproducibility.
     private const string CMakeVersion = "3.31.12";

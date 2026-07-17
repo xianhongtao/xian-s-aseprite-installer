@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Tui;
 using AsepriteInstaller.Utils;
@@ -12,7 +13,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class CleanupStep : IInstallerStep
 {
     public string StepId => "cleanup";
-    public string DisplayName => "Post-install cleanup";
+    public string DisplayName => Translations.StepCleanup;
 
     public Task<bool> ExecuteAsync(InstallContext ctx, CancellationToken ct = default)
     {

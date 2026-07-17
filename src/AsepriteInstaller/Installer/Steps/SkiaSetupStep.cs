@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Utils;
 
@@ -13,7 +14,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class SkiaSetupStep : IInstallerStep
 {
     public string StepId => "skia-setup";
-    public string DisplayName => "Download Skia prebuilt library";
+    public string DisplayName => Translations.StepSkia;
 
     // Fallback tag if the source hasn't been cloned yet.
     private const string DefaultSkiaTag = "m124-08a5439a6b";

@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Utils;
 
@@ -11,7 +12,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class SourceCloneStep : IInstallerStep
 {
     public string StepId => "source-clone";
-    public string DisplayName => "Clone Aseprite source code";
+    public string DisplayName => Translations.StepClone;
 
     private const string RepoUrl = "https://github.com/aseprite/aseprite.git";
 

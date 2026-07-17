@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.Models;
 using Spectre.Console;
 
@@ -8,36 +9,47 @@ namespace AsepriteInstaller.Tui;
 /// </summary>
 public static class UserPrompts
 {
+    /// <summary>Prompt user to select language first.</summary>
+    public static Language PromptLanguage()
+    {
+        return AnsiConsole.Prompt(
+            new SelectionPrompt<Language>()
+                .Title(Translations.PromptLanguage)
+                .PageSize(10)
+                .AddChoices(Language.ZhCN, Language.En)
+                .UseConverter(l => l.DisplayName()));
+    }
+
     /// <summary>Ask the user for installation scope and other options.</summary>
     public static InstallOptions PromptOptions()
     {
         var scope = AnsiConsole.Prompt(
             new SelectionPrompt<InstallScope>()
-                .Title("Choose [cyan]installation scope[/]:")
+                .Title(Translations.PromptScopeTitle)
                 .PageSize(10)
                 .AddChoices(InstallScope.User, InstallScope.System)
                 .UseConverter(s => s == InstallScope.System
-                    ? "System — C:\\Program Files\\Aseprite (requires admin)"
-                    : "User — %LOCALAPPDATA%\\Programs\\Aseprite (no admin needed)"));
+                    ? Translations.PromptScopeSystem
+                    : Translations.PromptScopeUser));
 
         var vsMode = AnsiConsole.Prompt(
             new SelectionPrompt<VsInstallMode>()
-                .Title("How should [cyan]Visual Studio 2022[/] be handled if not installed?")
+                .Title(Translations.PromptVsTitle)
                 .PageSize(10)
                 .AddChoices(VsInstallMode.AutoInstall, VsInstallMode.Manual)
                 .UseConverter(s => s switch
                 {
-                    VsInstallMode.AutoInstall => "Auto-install VS Build Tools (requires admin, ~3-5 GB)",
-                    VsInstallMode.Manual => "Manual — show instructions, I'll install it myself",
+                    VsInstallMode.AutoInstall => Translations.PromptVsAuto,
+                    VsInstallMode.Manual => Translations.PromptVsManual,
                     _ => s.ToString(),
                 }));
 
         var keepBuild = AnsiConsole.Confirm(
-            "Keep build artifacts after installation? (faster future updates, uses ~2 GB)",
+            Translations.PromptKeepBuild,
             defaultValue: true);
 
         var createShortcut = AnsiConsole.Confirm(
-            "Create a Start Menu shortcut?",
+            Translations.PromptShortcut,
             defaultValue: true);
 
         return new InstallOptions
@@ -52,7 +64,7 @@ public static class UserPrompts
     /// <summary>Ask the user to confirm before starting the installation.</summary>
     public static bool ConfirmStart()
     {
-        return AnsiConsole.Confirm("Ready to start the installation?", defaultValue: true);
+        return AnsiConsole.Confirm(Translations.PromptConfirmStart, defaultValue: true);
     }
 
     /// <summary>Ask whether to retry after a VS manual install.</summary>
@@ -60,7 +72,7 @@ public static class UserPrompts
     {
         AnsiConsole.WriteLine();
         return AnsiConsole.Confirm(
-            "Press Enter after you have installed Visual Studio 2022 with C++ tools, to continue.",
+            Translations.PromptVsRetry,
             defaultValue: true);
     }
 
@@ -68,7 +80,7 @@ public static class UserPrompts
     public static bool ConfirmCleanup()
     {
         return AnsiConsole.Confirm(
-            "Clean up build directory? (Keeping it speeds up future updates)",
+            Translations.PromptCleanup,
             defaultValue: false);
     }
 }

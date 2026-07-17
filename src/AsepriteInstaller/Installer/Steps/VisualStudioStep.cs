@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.Models;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Tui;
@@ -15,7 +16,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class VisualStudioStep : IInstallerStep
 {
     public string StepId => "visual-studio";
-    public string DisplayName => "Visual Studio 2022 / Build Tools";
+    public string DisplayName => Translations.StepVs;
 
     // VS 2022 (v17) Build Tools bootstrapper. This is the stable, well-tested version.
     // VS 2026 (v18) is also supported if already installed — detection handles both.
@@ -174,14 +175,7 @@ public sealed class VisualStudioStep : IInstallerStep
     {
         AnsiConsole.WriteLine();
         AnsiConsole.Write(new Panel(
-            "[yellow]Manual Visual Studio Installation[/]\n\n" +
-            "Please download and install Visual Studio 2022 Community (or Build Tools):\n" +
-            $"  [link]{VsBuildToolsUrl}[/]\n\n" +
-            "Required components:\n" +
-            "  • [cyan]Desktop development with C++[/] workload\n" +
-            "  • [cyan]Windows 11 SDK (10.0.26100.0)[/]\n" +
-            "  • MSVC v143 - VS 2022 C++ x64/x86 build tools\n\n" +
-            "After installation, re-run this installer.")
+            Translations.PromptVsManualGuide)
             .RoundedBorder()
             .BorderColor(Color.Yellow));
 

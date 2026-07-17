@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AsepriteInstaller.Installer;
 using AsepriteInstaller.Installer.Steps;
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.Models;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Tui;
@@ -20,14 +21,17 @@ public static class Program
         // Parse simple command-line args.
         var opts = ParseArgs(args);
 
+        // ── Step 0: Language selection (before anything else) ──
+        Translations.CurrentLang = UserPrompts.PromptLanguage();
+
         // Show banner.
         ConsoleApp.ShowBanner();
 
         // Handle UAC elevation for system-scope install.
         if (opts.Scope == InstallScope.System && !IsRunningAsAdmin())
         {
-            AnsiConsole.MarkupLine("[yellow]System-scope installation requires administrator privileges.[/]");
-            AnsiConsole.MarkupLine("[yellow]Relaunching with UAC elevation...[/]");
+            AnsiConsole.MarkupLine($"[yellow]{Translations.UacRequired}[/]");
+            AnsiConsole.MarkupLine($"[yellow]{Translations.UacRelaunch}[/]");
             Thread.Sleep(1500);
             RelaunchAsAdmin(args);
             return 0; // Never reached if relaunch succeeds.
@@ -54,7 +58,7 @@ public static class Program
 
         if (!UserPrompts.ConfirmStart())
         {
-            AnsiConsole.MarkupLine("[grey]Installation cancelled.[/]");
+            AnsiConsole.MarkupLine($"[grey]{Translations.Cancelled}[/]");
             return 0;
         }
 
@@ -68,7 +72,7 @@ public static class Program
         ctx.Log.Info($"Work dir: {opts.WorkDir}");
         ctx.Log.Info($"Install dir: {opts.InstallDir}");
 
-        // --- Build the step pipeline ---
+        // --- Build the step pipeline with localized names ---
         var steps = new IInstallerStep[]
         {
             new PreflightCheckStep(),
@@ -115,7 +119,7 @@ public static class Program
         }
         else
         {
-            ConsoleApp.ShowError("Installation did not complete. See the step summary above.", logger.LogFilePath);
+            ConsoleApp.ShowError(Translations.InstallationFailed, logger.LogFilePath);
             ctx.Log.Info("=== Installation failed ===");
             return 1;
         }
@@ -144,7 +148,7 @@ public static class Program
         var exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
         if (string.IsNullOrEmpty(exePath))
         {
-            AnsiConsole.MarkupLine("[red]Cannot determine executable path for UAC relaunch.[/]");
+            AnsiConsole.MarkupLine($"[red]{Translations.UacNoExe}[/]");
             return;
         }
 
@@ -161,7 +165,7 @@ public static class Program
         }
         catch (System.ComponentModel.Win32Exception)
         {
-            AnsiConsole.MarkupLine("[red]UAC elevation was declined. Please run as administrator manually.[/]");
+            AnsiConsole.MarkupLine($"[red]{Translations.UacDeclined}[/]");
         }
     }
 
@@ -236,20 +240,20 @@ public static class Program
     private static void ShowHelp()
     {
         AnsiConsole.Write(new Panel(
-            "[bold]Aseprite Installer[/] — Usage\n\n" +
-            "  AsepriteInstaller.exe [[options]]\n\n" +
-            "[bold]Options:[/]\n" +
-            "  --system            Install to C:\\Program Files\\Aseprite (requires admin)\n" +
-            "  --user              Install to %LOCALAPPDATA%\\Programs\\Aseprite (default)\n" +
-            "  --auto-vs           Auto-install VS Build Tools if missing (default)\n" +
-            "  --manual-vs         Show instructions for manual VS installation\n" +
-            "  --force             Force re-run all steps (ignore state.json)\n" +
-            "  --no-shortcut       Do not create Start Menu shortcut\n" +
-            "  --no-keep-build     Delete build directory after installation\n" +
-            "  --version <ref>     Build specific Aseprite git ref (default: latest main)\n" +
-            "  --install-dir <p>   Custom installation directory\n" +
-            "  --work-dir <p>      Custom working directory\n" +
-            "  --help, -h          Show this help message")
+            $"{Translations.HelpTitle}\n\n" +
+            $"{Translations.HelpUsage}\n\n" +
+            $"{Translations.HelpOptions}\n" +
+            $"{Translations.HelpSystem}\n" +
+            $"{Translations.HelpUser}\n" +
+            $"{Translations.HelpAutoVs}\n" +
+            $"{Translations.HelpManualVs}\n" +
+            $"{Translations.HelpForce}\n" +
+            $"{Translations.HelpNoShortcut}\n" +
+            $"{Translations.HelpNoKeepBuild}\n" +
+            $"{Translations.HelpVersion}\n" +
+            $"{Translations.HelpInstallDir}\n" +
+            $"{Translations.HelpWorkDir}\n" +
+            $"{Translations.HelpMsg}")
             .RoundedBorder()
             .BorderColor(Color.Cyan1));
     }

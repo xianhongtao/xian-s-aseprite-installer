@@ -1,3 +1,4 @@
+using AsepriteInstaller.Localization;
 using AsepriteInstaller.State;
 using AsepriteInstaller.Utils;
 using System.Runtime.InteropServices;
@@ -10,7 +11,7 @@ namespace AsepriteInstaller.Installer.Steps;
 public sealed class PreflightCheckStep : IInstallerStep
 {
     public string StepId => "preflight";
-    public string DisplayName => "Pre-flight checks";
+    public string DisplayName => Translations.StepPreflight;
 
     private const long MinDiskSpaceBytes = 5L * 1024 * 1024 * 1024; // 5 GB
 
