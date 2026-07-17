@@ -1,12 +1,6 @@
 # xian's Aseprite Installer
 
-> ⚠️ **Disclaimer**: This is an **unofficial, community-made tool** and is **NOT affiliated with Igara Studio S.A.** or the Aseprite team.
-> Aseprite is licensed under its own [EULA](https://github.com/aseprite/aseprite/blob/main/EULA.txt). By using this installer, you agree to comply with the Aseprite EULA.
-> 💚 **If you enjoy Aseprite, please consider [purchasing the official version](https://aseprite.org) to support the developers.**
-
-A **one-click, idempotent, atomic** installer for [Aseprite](https://github.com/aseprite/aseprite) on Windows.
-
-Double-click the single `AsepriteInstaller.exe` and it will:
+[🌐 English](README.md) | [🌐 中文](README.zh-CN.md)
 
 > ⚠️ **Disclaimer**: This is an **unofficial, community-made tool** and is **NOT affiliated with Igara Studio S.A.** or the Aseprite team.
 > Aseprite is licensed under its own [EULA](https://github.com/aseprite/aseprite/blob/main/EULA.txt). By using this installer, you agree to comply with the Aseprite EULA.
@@ -113,7 +107,7 @@ The installer handles everything automatically:
 .\build-installer.ps1
 ```
 
-Output: `dist/xiansxiansAsepriteInstaller.exe`
+Output: `dist/xiansAsepriteInstaller.exe`
 
 ## Project Structure
 
