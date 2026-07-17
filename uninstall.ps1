@@ -33,11 +33,31 @@ param(
 
 $ErrorActionPreference = "Continue"
 
+# ── Self-elevation if admin is needed ──────────────────────────────────────
+$systemPrograms = "${env:ProgramFiles}\Aseprite"
+$needsAdmin = Test-Path $systemPrograms
+
+if ($needsAdmin) {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal $identity
+    $isAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+    if (-not $isAdmin) {
+        Write-Host ""
+        Write-Host "⚠️  检测到系统级安装（Program Files），需要管理员权限。" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "   请以管理员身份重新运行此脚本：" -ForegroundColor Cyan
+        Write-Host "   sudo pwsh -NoProfile -File uninstall.ps1" -ForegroundColor White
+        Write-Host "   或在 PowerShell 中右键 → 「以管理员身份运行」" -ForegroundColor White
+        Write-Host ""
+        exit 1
+    }
+}
+
 # ── Paths ──────────────────────────────────────────────────────────────────
 # These match the defaults used by xian's Aseprite Installer.
 
 $userPrograms   = "$env:LOCALAPPDATA\Programs\Aseprite"
-$systemPrograms = "${env:ProgramFiles}\Aseprite"
 $workDir        = "$env:LOCALAPPDATA\AsepriteInstaller"
 $shortcutDir    = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Aseprite"
 $shortcutPath   = "$shortcutDir\Aseprite (self-compiled).lnk"
@@ -115,7 +135,7 @@ else {
 
 Remove-ItemSafe -Path $shortcutPath -Label "快捷方式 $shortcutPath"
 # Remove folder if empty
-if (Test-Path $shortcutDir -and -not (Get-ChildItem $shortcutDir -ErrorAction SilentlyContinue)) {
+if ((Test-Path $shortcutDir) -and (-not (Get-ChildItem $shortcutDir -ErrorAction SilentlyContinue))) {
     Remove-ItemSafe -Path $shortcutDir -Label "快捷方式文件夹 $shortcutDir"
 }
 
