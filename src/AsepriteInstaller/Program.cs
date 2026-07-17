@@ -31,6 +31,16 @@ public static class Program
         // Show banner.
         ConsoleApp.ShowBanner();
 
+        // ── EULA acceptance (required before proceeding) ──
+        if (!opts._optionsSetFromArgs || !opts.Force)
+        {
+            if (!UserPrompts.PromptEulaAccept())
+            {
+                AnsiConsole.MarkupLine($"[red]{Translations.EulaRejected}[/]");
+                return 1;
+            }
+        }
+
         // Handle UAC elevation for system-scope install.
         if (opts.Scope == InstallScope.System && !IsRunningAsAdmin())
         {

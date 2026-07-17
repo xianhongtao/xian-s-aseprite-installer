@@ -10,10 +10,10 @@ namespace AsepriteInstaller.Tui;
 /// </summary>
 public static class ConsoleApp
 {
-    /// <summary>Show the welcome banner and a brief description.</summary>
+    /// <summary>Show the welcome banner, disclaimer, and a brief description.</summary>
     public static void ShowBanner()
     {
-        var title = Translations.CurrentLang == Language.ZhCN ? "Aseprite 安装器" : "Aseprite Installer";
+        var title = Translations.CurrentLang == Language.ZhCN ? "xian's Aseprite 安装器" : "xian's Aseprite Installer";
         AnsiConsole.Write(new FigletText(title)
             .Centered()
             .Color(Color.Cyan1));
@@ -23,6 +23,13 @@ public static class ConsoleApp
             $"[grey]{Translations.BannerDescription}[/]")
             .RoundedBorder()
             .BorderColor(Color.Grey));
+        AnsiConsole.WriteLine();
+
+        // Disclaimer panel
+        AnsiConsole.Write(new Panel(Translations.DisclaimerText)
+            .RoundedBorder()
+            .BorderColor(Color.Yellow)
+            .Header($"[yellow] {Translations.DisclaimerTitle} [/]"));
         AnsiConsole.WriteLine();
     }
 

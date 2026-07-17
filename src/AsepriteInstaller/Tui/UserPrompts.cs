@@ -20,6 +20,19 @@ public static class UserPrompts
                 .UseConverter(l => l.DisplayName()));
     }
 
+    /// <summary>Prompt user to accept the Aseprite EULA. Returns false if rejected.</summary>
+    public static bool PromptEulaAccept()
+    {
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Panel(Translations.EulaPrompt)
+            .RoundedBorder()
+            .BorderColor(Color.Cyan1)
+            .Header($"[cyan] {Translations.EulaTitle} [/]"));
+        AnsiConsole.WriteLine();
+
+        return AnsiConsole.Confirm(Translations.EulaAccepted, defaultValue: false);
+    }
+
     /// <summary>Ask the user for installation scope and other options.</summary>
     public static InstallOptions PromptOptions()
     {

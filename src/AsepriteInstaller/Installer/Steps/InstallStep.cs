@@ -146,11 +146,13 @@ public sealed class InstallStep : IInstallerStep
         try
         {
             var exePath = Path.Combine(installDir, "aseprite.exe");
+            // Use "xian's Aseprite" as the folder name to distinguish from official version.
             var shortcutDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Programs),
-                "Aseprite");
+                "xian's Aseprite");
             Directory.CreateDirectory(shortcutDir);
-            var shortcutPath = Path.Combine(shortcutDir, "Aseprite.lnk");
+            // Name the shortcut "Aseprite (self-compiled)" to distinguish from official.
+            var shortcutPath = Path.Combine(shortcutDir, "Aseprite (self-compiled).lnk");
 
             // Use PowerShell to create the shortcut (avoids COM/WshShell in AOT).
             var psScript =
@@ -158,7 +160,7 @@ public sealed class InstallStep : IInstallerStep
                 $"$s = $ws.CreateShortcut('{shortcutPath}'); " +
                 $"$s.TargetPath = '{exePath}'; " +
                 $"$s.WorkingDirectory = '{installDir}'; " +
-                $"$s.Description = 'Aseprite - Animated Sprite Editor'; " +
+                $"$s.Description = 'Aseprite (self-compiled via xian''s Aseprite Installer)'; " +
                 $"$s.Save()";
 
             var psi = new ProcessStartInfo

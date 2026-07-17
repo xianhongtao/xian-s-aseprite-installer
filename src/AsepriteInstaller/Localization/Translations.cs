@@ -15,6 +15,9 @@ public static class Translations
 
     // ── Banner ──
 
+    public static string BannerTitle =>
+        _("xian's Aseprite Installer", "xian's Aseprite 安装器");
+
     public static string BannerDescription =>
         _("Idempotent, atomic, one-click Aseprite build & install for Windows.\n" +
           "This tool will download all dependencies, compile Aseprite from source,\n" +
@@ -22,6 +25,41 @@ public static class Translations
           "幂等、原子化、一键式 Aseprite Windows 编译安装工具。\n" +
           "本工具将自动下载所有依赖，从源码编译 Aseprite，\n" +
           "并安装到您指定的位置。");
+
+    // ── Disclaimer ──
+
+    public static string DisclaimerTitle => _("Disclaimer", "免责声明");
+
+    public static string DisclaimerText =>
+        _("[yellow]This is an unofficial, community-made tool and is NOT affiliated with\n" +
+          "Igara Studio S.A. or the Aseprite team.[/]\n\n" +
+          "Aseprite is licensed under its own EULA. By using this installer, you\n" +
+          "agree to comply with the Aseprite EULA.\n\n" +
+          "[green]If you enjoy Aseprite, please consider purchasing the official version\n" +
+          "from https://aseprite.org to support the developers.[/]",
+          "[yellow]本工具为非官方社区制作，与 Igara Studio S.A. 及 Aseprite 团队无关。[/]\n\n" +
+          "Aseprite 遵循其自身的 EULA 许可协议。使用本安装器即表示您同意遵守\n" +
+          "Aseprite EULA 的条款。\n\n" +
+          "[green]如果您喜欢 Aseprite，建议购买官方发售版本以支持开发者：\n" +
+          "https://aseprite.org[/]");
+
+    // ── EULA acceptance ──
+
+    public static string EulaTitle => _("Aseprite EULA", "Aseprite EULA 许可协议");
+
+    public static string EulaPrompt =>
+        _("Do you accept the Aseprite EULA?\n" +
+          "(See https://github.com/aseprite/aseprite/blob/main/EULA.txt for full text)",
+          "您是否接受 Aseprite EULA 许可协议？\n" +
+          "（完整文本见 https://github.com/aseprite/aseprite/blob/main/EULA.txt）");
+
+    public static string EulaAccepted =>
+        _("EULA accepted. Proceeding with installation.",
+          "已接受 EULA 协议。继续安装。");
+
+    public static string EulaRejected =>
+        _("EULA not accepted. Installation cannot proceed.",
+          "未接受 EULA 协议。无法继续安装。");
 
     // ── Plan table ──
 
@@ -49,8 +87,8 @@ public static class Translations
     // ── Success / Error ──
 
     public static string InstallSuccess(string path) =>
-        _($"Aseprite has been successfully installed!\n\nInstallation path: {path}\n\nYou can now launch Aseprite from the Start Menu.",
-          $"Aseprite 已成功安装！\n\n安装路径：{path}\n\n现在可以从开始菜单启动 Aseprite 了。");
+        _($"Aseprite has been successfully installed!\n\nInstallation path: {path}\n\nYou can now launch Aseprite (self-compiled) from the Start Menu.\n\n[green]Consider purchasing the official version from https://aseprite.org\n to support the developers.[/]",
+          $"Aseprite 已成功安装！\n\n安装路径：{path}\n\n现在可以从开始菜单启动 Aseprite (self-compiled) 了。\n\n[green]建议购买官方发售版本以支持开发者：https://aseprite.org[/]");
 
     public static string InstallationFailed =>
         _("Installation did not complete. See the step summary above.",
@@ -133,7 +171,7 @@ public static class Translations
 
     // ── Help text ──
 
-    public static string HelpTitle => _("[bold]Aseprite Installer[/] — Usage", "[bold]Aseprite 安装器[/] — 使用说明");
+    public static string HelpTitle => _("[bold]xian's Aseprite Installer[/] — Usage", "[bold]xian's Aseprite 安装器[/] — 使用说明");
     public static string HelpUsage => _("  AsepriteInstaller.exe [[options]]", "  AsepriteInstaller.exe [[选项]]");
     public static string HelpOptions => _("[bold]Options:[/]", "[bold]选项：[/]");
     public static string HelpSystem => _("  --system            Install to C:\\Program Files\\Aseprite (requires admin)", "  --system            安装到 C:\\Program Files\\Aseprite（需要管理员）");
