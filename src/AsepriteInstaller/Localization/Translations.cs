@@ -146,6 +146,7 @@ public static class Translations
     public static string HelpVersion => _("  --version <ref>     Build specific Aseprite git ref (default: latest main)", "  --version <版本>    编译指定 Aseprite 版本（默认最新 main）");
     public static string HelpInstallDir => _("  --install-dir <p>   Custom installation directory", "  --install-dir <路径> 自定义安装目录");
     public static string HelpWorkDir => _("  --work-dir <p>      Custom working directory", "  --work-dir <路径>    自定义工作目录");
+    public static string HelpLang => _("  --lang <code>       Set language (en or zh-CN)", "  --lang <代码>       设置语言（en 或 zh-CN）");
     public static string HelpMsg => _("  --help, -h          Show this help message", "  --help, -h          显示此帮助信息");
 
     // ── Some step DisplayNames ──

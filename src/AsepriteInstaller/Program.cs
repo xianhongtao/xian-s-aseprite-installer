@@ -16,13 +16,17 @@ namespace AsepriteInstaller;
 /// </summary>
 public static class Program
 {
+    /// <summary>True if --lang was specified via command line args.</summary>
+    private static bool s_langSetFromArgs;
+
     public static async Task<int> Main(string[] args)
     {
         // Parse simple command-line args.
         var opts = ParseArgs(args);
 
         // ── Step 0: Language selection (before anything else) ──
-        Translations.CurrentLang = UserPrompts.PromptLanguage();
+        if (!s_langSetFromArgs)
+            Translations.CurrentLang = UserPrompts.PromptLanguage();
 
         // Show banner.
         ConsoleApp.ShowBanner();
@@ -212,6 +216,13 @@ public static class Program
                         opts._optionsSetFromArgs = true;
                     }
                     break;
+                case "--lang":
+                    if (i + 1 < args.Length)
+                    {
+                        Translations.CurrentLang = LanguageExtensions.FromCode(args[++i]);
+                        s_langSetFromArgs = true;
+                    }
+                    break;
                 case "--install-dir":
                     if (i + 1 < args.Length)
                     {
@@ -253,6 +264,7 @@ public static class Program
             $"{Translations.HelpVersion}\n" +
             $"{Translations.HelpInstallDir}\n" +
             $"{Translations.HelpWorkDir}\n" +
+            $"{Translations.HelpLang}\n" +
             $"{Translations.HelpMsg}")
             .RoundedBorder()
             .BorderColor(Color.Cyan1));
