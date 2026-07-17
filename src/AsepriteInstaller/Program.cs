@@ -18,21 +18,23 @@ public static class Program
 {
     /// <summary>True if --lang was specified via command line args.</summary>
     private static bool s_langSetFromArgs;
+    private static bool s_eulaAccepted;
+    private static InstallOptions s_options = new();
 
     public static async Task<int> Main(string[] args)
     {
         // Parse simple command-line args.
-        var opts = ParseArgs(args);
+        s_options = ParseArgs(args);
 
-        // ── Step 0: Language selection (before anything else) ──
+        // ── Step 0: Language selection ──
         if (!s_langSetFromArgs)
             Translations.CurrentLang = UserPrompts.PromptLanguage();
 
         // Show banner.
         ConsoleApp.ShowBanner();
 
-        // ── EULA acceptance (required before proceeding) ──
-        if (!opts._optionsSetFromArgs || !opts.Force)
+        // ── EULA acceptance ──
+        if (!s_eulaAccepted)
         {
             if (!UserPrompts.PromptEulaAccept())
             {
@@ -41,34 +43,34 @@ public static class Program
             }
         }
 
-        // Handle UAC elevation for system-scope install.
-        if (opts.Scope == InstallScope.System && !IsRunningAsAdmin())
+        // ── Interactive options (scope, install dir, VS, etc.) ──
+        // Do this BEFORE UAC elevation so the user's choices are captured.
+        if (!s_options._optionsSetFromArgs)
+        {
+            var prompted = UserPrompts.PromptOptions();
+            prompted._optionsSetFromArgs = true;
+            s_options = prompted;
+        }
+
+        // Resolve default paths.
+        if (string.IsNullOrEmpty(s_options.WorkDir))
+            s_options.WorkDir = InstallOptions.DefaultWorkDir();
+        if (string.IsNullOrEmpty(s_options.InstallDir))
+            s_options.InstallDir = InstallOptions.DefaultInstallDir(s_options.Scope);
+
+        // ── UAC elevation for system scope ──
+        // After all prompts, so the relaunched admin process can skip prompts.
+        if (s_options.Scope == InstallScope.System && !IsRunningAsAdmin())
         {
             AnsiConsole.MarkupLine($"[yellow]{Translations.UacRequired}[/]");
             AnsiConsole.MarkupLine($"[yellow]{Translations.UacRelaunch}[/]");
             Thread.Sleep(1500);
-            RelaunchAsAdmin(args);
-            return 0; // Never reached if relaunch succeeds.
+            RelaunchAsAdmin(s_options);
+            return 0;
         }
-
-        // Prompt for options if not fully specified via args.
-        if (!opts._optionsSetFromArgs)
-        {
-            var prompted = UserPrompts.PromptOptions();
-            prompted.Scope = opts.Scope; // Keep scope from args if set.
-            if (opts.Scope == InstallScope.System)
-                prompted.Scope = InstallScope.System;
-            opts = prompted;
-        }
-
-        // Resolve default paths.
-        if (string.IsNullOrEmpty(opts.WorkDir))
-            opts.WorkDir = InstallOptions.DefaultWorkDir();
-        if (string.IsNullOrEmpty(opts.InstallDir))
-            opts.InstallDir = InstallOptions.DefaultInstallDir(opts.Scope);
 
         // Show the plan.
-        ConsoleApp.ShowPlan(opts);
+        ConsoleApp.ShowPlan(s_options);
 
         if (!UserPrompts.ConfirmStart())
         {
@@ -77,14 +79,14 @@ public static class Program
         }
 
         // --- Initialize context ---
-        var statePath = Path.Combine(opts.WorkDir, "state.json");
+        var statePath = Path.Combine(s_options.WorkDir, "state.json");
         var state = InstallState.LoadOrCreate(statePath);
-        using var logger = new Logger(Path.Combine(opts.WorkDir, "logs"));
-        var ctx = InstallContext.Create(opts, state, logger);
+        using var logger = new Logger(Path.Combine(s_options.WorkDir, "logs"));
+        var ctx = InstallContext.Create(s_options, state, logger);
 
-        ctx.Log.Info($"=== Aseprite Installer started ===");
-        ctx.Log.Info($"Work dir: {opts.WorkDir}");
-        ctx.Log.Info($"Install dir: {opts.InstallDir}");
+        ctx.Log.Info($"=== xian's Aseprite Installer started ===");
+        ctx.Log.Info($"Work dir: {s_options.WorkDir}");
+        ctx.Log.Info($"Install dir: {s_options.InstallDir}");
 
         // --- Build the step pipeline with localized names ---
         var steps = new IInstallerStep[]
@@ -127,7 +129,7 @@ public static class Program
 
         if (success)
         {
-            ConsoleApp.ShowSuccess(opts.InstallDir);
+            ConsoleApp.ShowSuccess(s_options.InstallDir);
             ctx.Log.Info("=== Installation completed successfully ===");
             return 0;
         }
@@ -157,7 +159,7 @@ public static class Program
         }
     }
 
-    private static void RelaunchAsAdmin(string[] args)
+    private static void RelaunchAsAdmin(InstallOptions opts)
     {
         var exePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
         if (string.IsNullOrEmpty(exePath))
@@ -166,12 +168,33 @@ public static class Program
             return;
         }
 
+        // Serialize all user choices into CLI args so the elevated process
+        // can skip prompts and proceed directly.
+        var args = new List<string>
+        {
+            $"--lang {Translations.CurrentLang.ToCode()}",
+            "--eula-accepted",
+            opts.Scope == InstallScope.System ? "--system" : "--user",
+            opts.VsMode == VsInstallMode.AutoInstall ? "--auto-vs" : "--manual-vs",
+            opts.KeepBuildArtifacts ? "" : "--no-keep-build",
+            opts.CreateShortcut ? "" : "--no-shortcut",
+        };
+
+        if (!string.IsNullOrEmpty(opts.InstallDir) &&
+            opts.InstallDir != InstallOptions.DefaultInstallDir(opts.Scope))
+            args.Add($"--install-dir \"{opts.InstallDir}\"");
+
+        if (!string.IsNullOrEmpty(opts.GitRef))
+            args.Add($"--version {opts.GitRef}");
+
+        var argStr = string.Join(' ', args.Where(a => !string.IsNullOrEmpty(a)));
+
         try
         {
             var psi = new ProcessStartInfo
             {
                 FileName = exePath,
-                Arguments = string.Join(' ', args),
+                Arguments = argStr,
                 UseShellExecute = true,
                 Verb = "runas",
             };
@@ -232,6 +255,9 @@ public static class Program
                         Translations.CurrentLang = LanguageExtensions.FromCode(args[++i]);
                         s_langSetFromArgs = true;
                     }
+                    break;
+                case "--eula-accepted":
+                    s_eulaAccepted = true;
                     break;
                 case "--install-dir":
                     if (i + 1 < args.Length)

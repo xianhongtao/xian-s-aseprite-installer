@@ -189,7 +189,21 @@ public static class Translations
     public static string HelpWorkDir => _("  --work-dir <p>      Custom working directory", "  --work-dir <路径>    自定义工作目录");
     public static string HelpLang => _("  --lang <code>       Set language (en or zh-CN)", "  --lang <代码>       设置语言（en 或 zh-CN）");
     public static string HelpMsg => _("  --help, -h          Show this help message", "  --help, -h          显示此帮助信息");
+    // ── Custom install directory ──
 
+    public static string PromptCustomInstallDir =>
+        _("Use default installation directory, or customize?",
+          "使用默认安装目录，还是自定义？");
+    public static string CustomDirOptionDefault =>
+        _("Default — {0}", "默认 — {0}");
+    public static string CustomDirOptionCustom =>
+        _("Custom — specify a different path", "自定义 — 指定其他路径");
+    public static string PromptEnterCustomDir =>
+        _("Enter custom [cyan]installation directory[/]:",
+          "输入自定义[cyan]安装目录[/]：");
+    public static string CustomDirInvalid =>
+        _("Path cannot be empty. Using default.",
+          "路径不能为空。使用默认路径。");
     // ── Some step DisplayNames ──
 
     public static string StepPreflight => _("Pre-flight checks", "环境检查");

@@ -45,6 +45,26 @@ public static class UserPrompts
                     ? Translations.PromptScopeSystem
                     : Translations.PromptScopeUser));
 
+        // Custom install directory.
+        var defaultDir = InstallOptions.DefaultInstallDir(scope);
+        var useCustomDir = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title(Translations.PromptCustomInstallDir)
+                .PageSize(10)
+                .AddChoices(
+                    string.Format(Translations.CustomDirOptionDefault, defaultDir),
+                    Translations.CustomDirOptionCustom));
+
+        var installDir = defaultDir;
+        if (useCustomDir != string.Format(Translations.CustomDirOptionDefault, defaultDir))
+        {
+            installDir = AnsiConsole.Ask<string>(Translations.PromptEnterCustomDir);
+            if (string.IsNullOrWhiteSpace(installDir))
+            {
+                installDir = defaultDir;
+            }
+        }
+
         var vsMode = AnsiConsole.Prompt(
             new SelectionPrompt<VsInstallMode>()
                 .Title(Translations.PromptVsTitle)
@@ -71,6 +91,7 @@ public static class UserPrompts
             VsMode = vsMode,
             KeepBuildArtifacts = keepBuild,
             CreateShortcut = createShortcut,
+            InstallDir = installDir,
         };
     }
 
